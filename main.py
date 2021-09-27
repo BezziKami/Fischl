@@ -16,6 +16,7 @@ class Menu(tk.Frame):
     def __init__(self, master):
         super().__init__(master)
         self.master = master
+        Game(self.master)
         #self.layout()
         self.grid()
 
