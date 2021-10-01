@@ -3,61 +3,76 @@ import json
 
 
 def main():
-    root = tk.Tk()
-    app = Menu(master=root)
-    app.master.title("My little Fischle")
-    root.geometry("400x200+800+200")
-    app.master.rowconfigure(0, minsize=100, weight=1)
-    app.master.columnconfigure(0, minsize=100, weight=1)
+    app = Fischl()
+    app.title("My little Fischle")
+    app.geometry("400x200+800+200")
+    app.rowconfigure(0, minsize=100, weight=1)
+    app.columnconfigure(0, minsize=100, weight=1)
     app.mainloop()
+
+
+class Fischl(tk.Tk):
+    def __init__(self):
+        super().__init__()
+        self._frame = None
+        self.open_page(Menu)
+
+    def open_page(self, frame_name):
+        new_frame = frame_name(self)
+        if self._frame is not None:
+            self._frame.destroy()
+        self._frame = new_frame
+        self._frame.grid()
+
+    def back_menu(self, master):
+        frm_back = tk.Frame(master)
+        btn_back = tk.Button(master, text="BACK", command=lambda: self.open_page(Menu))
+        btn_back.grid(padx=10)
+        frm_back.grid(row=0, column=0, sticky='nsew', )
 
 
 class Menu(tk.Frame):
     def __init__(self, master):
         super().__init__(master)
         self.master = master
-        Game(self.master)
-        #self.layout()
-        self.grid()
+        self.layout()
 
-    '''def layout(self):
-        btn_start = tk.Button(self, text="START", command=self.start)
-        btn_deck = tk.Button(self, text="DECK", command=self.deck)
+    def layout(self):
+        btn_start = tk.Button(self, text="START", command=lambda: self.master.open_page(Game))
+        btn_deck = tk.Button(self, text="DECK", command=lambda: self.master.open_page(Options))
         btn_start.grid(row=0, column=0, sticky="nsew", pady=10)
-        btn_deck.grid(row=1, column=0, sticky="nsew", pady=10)'''
-
-    def start(self):
-        pass
-
-    def deck(self):
-        pass
+        btn_deck.grid(row=1, column=0, sticky="nsew", pady=10)
 
 
 class Game(tk.Frame):
     def __init__(self, master):
-        super().__init__(master, relief="sunken", borderwidth=3)
+        super().__init__(master)
         self.master = master
+        self.master.back_menu(self)
         self.layout()
-        self.grid(row=0, column=0)
 
     def layout(self):
-        print("Tworze layout dla gry")
-        lbl_front = tk.Label(self.master, width=20, text="Tu ma być FRONT")
-        ent_back = tk.Entry(self.master, width=20, text="Tu ma być BACK")
+        frm_layout = tk.Frame(self)
+        lbl_front = tk.Label(frm_layout, width=20, text="Tu ma być FRONT")
+        ent_back = tk.Entry(frm_layout, width=20)
         lbl_front.grid(row=0, column=0, sticky="nsew", pady=10)
         ent_back.grid(row=1, column=0, sticky="nsew", pady=10)
+        frm_layout.grid(row=0, column=1, sticky="nsew", pady=10)
 
 
 class Options(tk.Frame):
     def __init__(self, master):
         super().__init__(master)
         self.master = master
-        self.grid(row=0, column=1)
+        self.master.back_menu(self)
+        self.layout()
 
     def layout(self):
-        print("Okienko?")
-        btn_load = tk.Button(self.master, text="LOAD")
-        btn_load.grid()
+        btn_load = tk.Button(self, text="LOAD")
+        btn_load.grid(row=0, column=1, sticky='nsew')
+
+
+#=================================================================================
 
 
 class Deck:
